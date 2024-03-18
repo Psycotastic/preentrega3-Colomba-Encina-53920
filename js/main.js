@@ -1,7 +1,9 @@
+// Inicia el saldo del usuario en 10 si no hay un valor almacenado en localStorage
 const initialBalance = 10;
 let userBalance = localStorage.getItem('userBalance') || initialBalance;
 userBalance = parseFloat(userBalance);
-		
+
+// Define los datos de los 5 caballos
 		const caballos = [
 		  {
 			nombre: 'Siempre Regia',
@@ -43,23 +45,26 @@ userBalance = parseFloat(userBalance);
 		  },
 		];
 
-    function simularTiempo(caballo, modificaciones) {
-      const caballoActualizado = { ...caballo }; // Create a copy of the horse object
+// Función para simular el paso del tiempo en un caballo y actualizar sus propiedades
+function simularTiempo(caballo, modificaciones) {
+  const caballoActualizado = { ...caballo }; // Creamos una copia del objeto caballo
 
-      if (random(1, 100) <= 10) {
-        // Update the horse properties
-        Object.keys(modificaciones).forEach(propiedad => {
-          caballoActualizado[propiedad] += modificaciones[propiedad];
-        });
-      }
+  if (random(1, 100) <= 10) {
+    // Actualiza las propiedades del caballo con una pequeña probabilidad
+    Object.keys(modificaciones).forEach(propiedad => {
+      caballoActualizado[propiedad] += modificaciones[propiedad];
+    });
+  }
 
-      return caballoActualizado; // Return the updated horse object as an array
-    }
+  return caballoActualizado; // Devolvemos el caballo actualizado
+}
 
-		function random(min, max) {
+// Función para generar un número aleatorio entre dos enteros incluidos
+function random(min, max) {
   return Math.floor(Math.random() * (max -min + 1)) + min;
 }
 
+// Función para actualizar el arreglo de caballos con las nuevas propiedades y experiencia
 function actualizarCaballos(indiceCaballoSeleccionado) {
   caballos.forEach((caballo, index) => {
     if (index === indiceCaballoSeleccionado) {
@@ -67,14 +72,12 @@ function actualizarCaballos(indiceCaballoSeleccionado) {
     }
   });
   actualizarRadiosButtons(caballos);
-
-  //Set the selected input as checked
   const input = document.querySelector(`input[name="caballo"][value="${indiceCaballoSeleccionado}"]`);
   if (input) {
     input.checked = true;
-  }return caballos; //Return the updated caballos array
+  }return caballos; 
 }
-
+// Función para calcular el caballo ganador de la carrera
 function calcularCaballoGanador(caballosActualizados) {
   const simulados = caballosActualizados.map(caballo => simularTiempo(caballo, {}));
   const randomIndex = Math.floor(Math.random() * simulados.length);
@@ -161,20 +164,17 @@ function apostarPorCaballo() {
   if (caballoSeleccionado) {
     const indiceCaballoSeleccionado = caballoSeleccionado.value;
 
-    // Reset the experience values of all horses
     caballos.forEach((caballo, index) => {
       caballosActualizados[index] = { ...caballo, experiencia: caballo.experiencia };
     });
 
-    // Update the experience values of the horses
     const caballosActualizadosConExperiencia = actualizarCaballos(indiceCaballoSeleccionado);
 
-    // Update the list of horses
     caballosActualizados = seleccionarCaballo(caballosActualizadosConExperiencia, indiceCaballoSeleccionado);
     actualizarRadiosButtons(caballosActualizados);
 
     const mensajeContainer = document.getElementById('mensaje-container');
-    mensajeContainer.innerHTML = ''; // Clear the existing messages
+    mensajeContainer.innerHTML = ''; 
 
     if (caballoSeleccionado) {
       const caballoGanador = calcularCaballoGanador(caballosActualizados);
@@ -193,10 +193,8 @@ function apostarPorCaballo() {
         mensajeContainer.appendChild(mensajePerdedor);
       }
 
-      // Update the user's balance on the page
       document.getElementById('balance-value').textContent = userBalance.toFixed(2);
 
-      // Update the user's balance inlocalStorage
       localStorage.setItem('userBalance', userBalance);
     } else {
       const mensajeError = document.createElement('p');
